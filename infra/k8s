@@ -1,0 +1,15 @@
+Pod:
+    structure
+        noraml
+        multi-container
+    life cycle
+    networking: 
+        intra pod
+        inter pod
+    yaml file
+    if container dies, pod will try to create it again using image
+    volume mount
+
+    1. metadata service overview
+    2. craeted pods with above base image
+    3. 

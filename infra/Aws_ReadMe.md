@@ -413,6 +413,9 @@ S3:
     	sns, sqs, lambda
     	eventBridge
     	resource policy instead of user policy
+    Performance:
+        3,500 - GET/HEAD
+        5,500 - PUT/POST/DELETE
     Uploads:
     	Multi uploads => can be paralellized
     	S3 tranfer acceleration => send it to nearest edge location ( public ) then use private network to upload.
@@ -465,8 +468,9 @@ S3:
     	who are seeting up the header to encrypt & decrypt data
 
 Storage Extras:
-Snow Family:
-storage , edge processing, data migration / transfer
+
+    Snow Family:
+        storage , edge processing, data migration / transfer
 
     	Snowcone:
     		2CPU / 4GB RAM
@@ -513,6 +517,32 @@ storage , edge processing, data migration / transfer
 
     DataSync:
     	S3, EFS, FSx
+
+Integration & Messaging:
+    async communication
+    SQS:
+        4 - 14 days retention
+        256KB
+        receive 10 msgs at a time
+        delete after processing it
+        auto scale based on no of msgs no queue ( cloudwatch metric , alarm )
+        security:
+            encryption
+            user access
+            reource based policy
+        message visibility ( 30 sec ), ChangeMessageVisibility
+        long polling , WaitTimeSeconds: 1-20 sec
+        duplicate, un-order
+    FIFO SQS:
+        no duplicates, order
+        300 msg/s without batching, 3000 msg/s with
+    SNS:
+        pub/sub model
+        12,500,000 subscribers
+        message filtering
+    SNS + SQS Fan Out
+        
+        
 
 Database:
 
@@ -666,12 +696,17 @@ Serverless:
     virtual functions on demand
 
     lambda:
+        memory 128MB - 10GB
+        disk capacity 512MB - 10GB
     	maximum execution 15 mins
     	4KB variables
-    	10GB
-
+    lambda snapstart
+    lambda in vpc ( eni )
+    invoke lambda from rds instance
+    connect to sns / eventbridge
     lambda edge:
     	authenticate users at the CloudFront Edge Locations instead of authentication requests go all the way to your origins
+    
 
     DynamoDB:
     	no sql, higly scalable + available , auto scalling, multi az replication
@@ -681,7 +716,7 @@ Serverless:
     	import , export to s3 ( RCU & WCU won't be utilized here )
 
     	DynamoDB Accelerator (DAX):
-    		DAX cluster for caching data
+    		DAX cluster for in-memory caching data
     		no application changes
     		5 min TTL
 
@@ -692,6 +727,7 @@ Serverless:
     	Backups
     		35 days
         can't connect lambda directly from dynamoDb, you need dynamoDb Stream to do that.
+        import & export to s3 ( RCU & WCU won't be used )
 
 Data & Analysis
 

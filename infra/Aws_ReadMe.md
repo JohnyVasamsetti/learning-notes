@@ -519,6 +519,7 @@ Storage Extras:
     	S3, EFS, FSx
 
 Integration & Messaging:
+
     async communication
     SQS:
         4 - 14 days retention
@@ -542,20 +543,20 @@ Integration & Messaging:
         message filtering
     SNS + SQS Fan Out
         
-        
 
 Database:
 
     Security:
     	Encryption using KMS
     	Authentation using IAM
+        TLS
     	Security groups
     	Cant use SSH
 
     BackUp:
     	automated 1 to 35 days retention ( cann't be disable on aurora)
     	PTR
-    	long-term -> on demand backup
+    	long-term -> on demand backup ( manually )
 
     Restore Options
         create snapshot of on-premise database
@@ -674,10 +675,11 @@ Database:
     Amazon KeySpaces ( serverless )
     	Apache cassandra
     	3 times across multi az
-    	Cassandra QUery Language
+    	Cassandra Query Language
     	IOT devices info
 
     QLDB ( serverless )
+        hightly available,multi az
     	quantum ledger
     	replication across 3 az
     	recording financial transactions: review history of all the changes made to your application data
@@ -685,6 +687,7 @@ Database:
     	blockchain
 
     Timestream ( serverless )
+        scalable
     	time series database
     	storage tiering
     	Built-in time series analytics functions
@@ -734,6 +737,7 @@ Data & Analysis
     Athena:
     	serverless query executor for s3 access logs.
     	better for adhoc request ( quick to load )
+        using data source connector in lambda it will execute federated queries on DynamoDb, Redshift, RDS, Aurora, Elasticache, etc        
 
     Redshift:
     	online analytical processing
@@ -761,6 +765,7 @@ Data & Analysis
     Quicksight:
     	serverless interactive dashboards
     	in-memory computation
+        column level security
 
     Glue:
     	serverless
@@ -780,6 +785,7 @@ Data & Analysis
     MSK:
     	alternative for kinesis
     	server / serverless
+        EBS
 
     Data ingestion pipeline:
     	collect data	Kinesis
@@ -800,8 +806,9 @@ Monitoring:
     	cloudwatch metric stream
     	logs insights
     		run query on logs
-    	logs export : 12 days
+    	logs export s3: 12 days
     	logs subscription:
+            real-time logging
     		cross-accounts + cross-regions
     		filter logs
     	ec2 logs:
@@ -814,6 +821,7 @@ Monitoring:
     			auto scaling
     			sns
     		composite alarm: monitor the state of other alarms
+            can be created based on logs
 
     	EventBridge:
     		schedule cron jobs
@@ -833,7 +841,7 @@ Monitoring:
 
     Cloudtrail
     	management events + data events
-    	management event -> cloudtrial_insights -> insights_events => s3 / cloudtrail_console / eventbridge
+    	management event ( write events ) -> cloudtrial_insights -> insights_events => s3 / cloudtrail_console / eventbridge
     	better combination : API calls + Cloud Trail + Event Bridge
 
     Aws Config:
@@ -843,7 +851,23 @@ Monitoring:
     	cloudtrail is little different, it records API calls within account by everyone. but aws config will evaluate resources agains compliance rules & config changes to resource & get timeline of changes
 
     	config remediation: going back
-    	config notification
+    	config notifications -> event bridge + sns
+
+Machine Learning:
+    
+    Rekognition: face detection, labeling, celebrity recognition • Transcribe: audio to text (ex: subtitles)
+    Transcribe
+    Polly
+    Translate: translations
+    Lex: build conversational bots – chatbots
+    Connect: cloud contact center
+    Comprehend: natural language processing
+    Comprehend medical
+    SageMaker: machine learning for every developer and data scientist • Forecast: build highly accurate forecasts
+    Forecast
+    Kendra: ML-powered search engine
+    Personalize: real-time personalized recommendations • Textract: detect text and data in documents 
+    Textract
 
 Security:
 

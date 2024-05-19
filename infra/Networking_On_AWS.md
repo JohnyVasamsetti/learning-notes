@@ -88,6 +88,31 @@ inside and outside VPC
 
     1. Via Direct Connect ( Using physical wires -> Costly )
     2. VPN Connection  ( Virtual Private Gateway  -> Customer Gateway )
+        on public network + secure
+
+**Site to Site Connection:**
+    
+    Virtual Private Gateway
+    Customer Gateway
+    AWS VPN CloudHub
+
+**Direct Connect:**
+    
+    dedicated private network + data in transit not encrypted
+    Direct Connect Gateway to connect one or more VPC in many different regions
+    Types:
+        Dedicated
+        Hosted
+    Direct Connect - Resiliency
+    Site to Site as a backup
+
+**Transit Gateway:**
+    
+    having transitive peering between thousands of VPC and on-premises
+    Equal-cost multi-path routing ( more STS connections )
+    Integration with Direct Connect Gateway
+
+
 
 **Network Address Translation:**
 

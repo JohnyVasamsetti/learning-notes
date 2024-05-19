@@ -47,6 +47,8 @@ IAM Advanced:
     				account-1 ( need an explicit allow )
     				account-2
 
+        central logging account
+
     IAM conditions:
     	SourceIp
     	RequestedRegion
@@ -88,13 +90,13 @@ IAM Advanced:
 
     	managed microsoft ad
     	ad connector
-    	simple ad
+    	simple ad ( aws managed )
 
     identity center -> active directory
 
     Control Tower:
     	best way to manage multi-account aws environment in few clicks
-    	manage policy management using guardrails ( preventive & detectice )
+    	manage policy management using guardrails ( preventive - scps & detectice - aws config )
     	detect policy voilations
     	compliance dashboard
 
@@ -965,6 +967,33 @@ Data Migrations:
 
     	for on-going use DMS / Datasync with above ones
 
+AWS Networking:
+    
+    VPC - Traffic Mirroring:
+        send traffic to security appliances
+    
+    Egress Only Internet Gateway -> Same as NAT for IPV6
+    
+    Networking Cost Savings:
+        Use private Ip so that traffic won't go via public internet
+        Query the db first then send the tiny result over the internet
+        Use endpoint for s3 & dynamodb
+    
+    Aws Network Firewall:
+        Protect your entire Amazon VPC
+
+Other Services:
+
+    cost optimizer
+    aws batch
+    aws appflow ( Slack / ServiceNow -> S3 / Redshift )
+    Amplify
+        deploy mobile / web application
+
+    Well-Architected Tool
+        review against 6 pillers
+    Trusted Advisor
+        provide recommendations over 6 categories
 
 Mock Test Reviews:
     
@@ -1009,6 +1038,8 @@ Mock Test Reviews:
     
     If you specify targets using an instance ID, traffic is routed to instances using the primary private IP address specified in the primary network interface for the instance
     If you specify targets using IP addresses, you can route traffic to an instance using any private IP address from one or more network interfaces
+    
+    Compute Optimizer -> EC2,ASG,EBS,Lambda 
 
 
 aws.amazon.com/architecture

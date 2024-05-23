@@ -999,7 +999,8 @@ Mock Test Reviews:
     
     Use AWS Global Accelerator to distribute a portion of traffic to a particular deployment.
     In blue/green deployment if you wanna test the deployment without thinking about DNS cache, then use Global Accelerator.
-    
+    lowest latency and provide fast regional failover -> Global Accelerator
+
     AWS Compute Optimizer to look at instance type recommendations
     
     You cannot use Transfer Acceleration to copy objects across Amazon S3 buckets in different Regions using Amazon S3 console.
@@ -1041,6 +1042,75 @@ Mock Test Reviews:
     
     Compute Optimizer -> EC2,ASG,EBS,Lambda 
 
+    dead-letter queue to collect failed messages
+    AWS recommend using separate queues when you need to provide prioritization of work
+    
+    Amazon RDS creates an SSL certificate and installs the certificate on the DB instance when Amazon RDS provisions the instance.
+
+    OriginGroup -> An origin group includes two origins (a primary origin and a second origin to failover to) and a failover criteria that you specify.
+    
+    a geographic restriction for the delivery of content -> cloudfront
+
+    tightly-coupled High Performance Computing -> Elastic Fabric Adapter 
+
+    two regions lo low latency queries annadante inka global db eh ( dynamodb, aurora )
+
+    block protocols -> iscsi -> volume gateway (cache )
+    file protocols -> nfs  -> file gateway ( cache )
+
+    migrating to s3 / efs / fsx then first think about DataSync then only DMS
+    AWS Database Migration Service (DMS) is used for migrating databases, not data on file shares.
+    
+    Lambda@Edge is not used to direct traffic to on-premises origins.
+
+    Availability for on-premise database -> migrate to RDS multi-az 
+    
+    task_role -> s3 , dynamodb access
+    task_execution_role -> access to pull image, send logs
+    container_instance_role -> to the entire ec2 instance ( means all tasks under instance )
+
+    On-Demand Capacity Reservations enable you to reserve compute capacity for your Amazon EC2 instances in a specific Availability Zone for any duration
+
+    app deployed on more instance then we should use ALB
+
+    maximum performance -> use Direct connect over site-to-site connection
+
+    Mock-Test-1:
+        mistake - multi az rds & ec2
+        mistake - sqs over kds
+        don't know - rds ssl
+        mistake - backup with support details using cloudfront
+        don't know - cloudfront origin group ( availability of origin )
+        mistake - cloudfront to block countries
+        mistake - hibernate the instance for instance memory preservation
+        mistake - storage must be mounted using the NFS protocol ( EFS , not s3)
+        mistake - cache for block & efs file storages (volume gateway, file gateway)
+        mistake - notification service with decouple functionality ( SNS )
+        mistake - migration from fsx to s3 ( datasync over dms )
+        don't know - improve performance of on-premise dynamic app by having cache using cloudfront
+        mistake - multi az ( mq,ec2,database )
+        don't kmow - use deny over the apply as much as possible ( SCP with a deny rule that denies all but the specific instance types )
+        mistake - scale middle tier ec2 instances
+        don't know - ec2 when we need it ( capacity reservations(without commitment), zonal reserved instances(with commitment) )
+        mistake - made ec2 instance available to internet ( use alb with new public subnets )
+        mistake - maximum performance while connecting on-premise to vpc -> Direct connect over site-to-site
+        don't know - AWS recommend using separate queues when you need to provide prioritization of work
+        mistake - didn't understood it properly. encrypt of read-replica only possible with new encrypted snapshot and new db creation.
+
+Doubts:
+    2,3,8 [b,d], 11[c/d], 37[c,d], 38[a,c], 39[a,c], 61[b,c],65[a,d]
+    how to enable tls/ssl on rds ?
+    backup website ? s3 / ec2
+    cloudfront orgins ? at a time s3 and inkokati undocha ? ( OriginGroup )
+    Is efs multi region ? kakapothe multi-region vachinapudu s3 chuskocha ?
+    which is secure for rds ? iam / tls ? 
+    durable ? reliable ? resiliency ?
+
+mock tests:
+    1:
+        ebs & efs storage capacities
+        protocols for fsx & storage gateway
 
 aws.amazon.com/architecture
 aws.amazon.com/solutions
+https://digitalcloud.training/aws-application-integration-services/

@@ -1098,19 +1098,117 @@ Mock Test Reviews:
         mistake - didn't understood it properly. encrypt of read-replica only possible with new encrypted snapshot and new db creation.
 
 Doubts:
-    2,3,8 [b,d], 11[c/d], 37[c,d], 38[a,c], 39[a,c], 61[b,c],65[a,d]
-    how to enable tls/ssl on rds ?
-    backup website ? s3 / ec2
-    cloudfront orgins ? at a time s3 and inkokati undocha ? ( OriginGroup )
-    Is efs multi region ? kakapothe multi-region vachinapudu s3 chuskocha ?
-    which is secure for rds ? iam / tls ? 
+
+    how to enable tls/ssl on rds ? It will be automatic
+    backup website ? s3 / ec2 ? If static files then s3
+    cloudfront orgins ? at a time s3 and inkokati undocha ? Undochu OriginGroup tho at a time two origin pettochu. primary + secondary
+    Is efs multi region ? kakapothe multi-region vachinapudu s3 chuskocha ? 
+    which is secure for rds ? iam / tls ? both are little different iam evariki access ivvalo chustadhi, tls aa connections secure ga undela chustadhi
     durable ? reliable ? resiliency ?
 
-mock tests:
-    1:
-        ebs & efs storage capacities
-        protocols for fsx & storage gateway
+WhitePapers:
+    
+    Global,Available,Scalable
+    Higher-level managed services
+    Built-in Security
+    Archiving for cost
+    
+    Design Principles:
+        scalability
+        stateless application
+        Distribute load to multiple nodes
+            Push : ALB,NLB,Route 53 rounb robin
+            Pull : SQS
+        stateless components
+            all session data
+            session id
+            s3,efs
+        stateful components
+            gaming environment ( horizontal scaling using affinity )
+        Implement session affinity
+            through alb sticky functionality
+            custom functionality from client software
+        Distributed processing
+            Offline ->  aws batch , apache hadoop, glue
+            aws -> EMR hadoop
+            real-time -> kinesis
+        Disposable resources instead of fixed resources
+            fixed resource has a problem of drift configuration
+        Instantiating Compute Resources
+            Bootstrapping
+            Golden Images
+            Containers
+        Automation for events happening on aws services
+            IAC
+            Beanstalk
+            ec2 recovery
+            Systems manager
+            Auto scaling
+            Alarm & Events
+        Loose coupling:
+            RESTful API
+            Asynchronous Integration -> SQS
+        Serverless:
+            Lambda
+            API gateway
+            Cognito
+            lambda Edge
+            Athena
+        Databases:
+            SQL
+            NOSQL
+            Data warehouse -> Redshift
+            Search
+            Managing increase volume of data -> Data lake
+        Removing Single Points of Failure
+            Redundancy
+                standby
+                active
+            Detect Failure & React
+                using metrics and alarms
+            Design Good Health Checks
+                layered health checks ( better )
+                deep health check ( not only instance is up, checking connection btw db )
+            Durable Data Storage
+                Replication:
+                    Synchronous: A transaction can’t be acknowledged before all replicas have performed the write. it is not recommended to maintain many synchronous replicas
+                    Asynchronous replication:  decouples the primary node from its replicas at the expense of introducing replication lag.
+                    Quorum-based replication: combines synchronous and asynchronous replication
+            Automated Multi-Data Center Resilience
+                failover ( RDS autofailover )
+                Shuffle Sharding
+    
+    Optimize for Cost:
+        Right Sizing
+        Elasticity
+        Take Advantage of the Variety of Purchasing Options
+            Reserved Instances  ->  AWS Trusted Advisor or Amazon EC2 usage report
+            Spot Instances
+    
+    Cache:
+        Application Data Caching -> Elasticache
+        Edge Caching
+            Cloudfront, Edge locations
+            Amazon CloudFront reuses existing connections between the Amazon CloudFront edge and the origin server, which reduces connection setup latency for each origin request
+
+    Security:
+        Guard -> VPC topology
+        human readable -> Data encryption
+        long term credentials or service accounts
+        Cognito
+        Security as Code:
+            Golden Environment -> This template is used by AWS CloudFormation and deploys your resources in alignment with your security policy
+        Aws cloudwatch -> logs to reproduce it on lower envs and troubleshoot the issue
+        Aws config
+        Aws cloudtrail
+    
 
 aws.amazon.com/architecture
 aws.amazon.com/solutions
 https://digitalcloud.training/aws-application-integration-services/
+
+white papers:
+
+    https://d1.awsstatic.com/whitepapers/AWS_Cloud_Best_Practices.pdf
+    https://d0.awsstatic.com/whitepapers/AWS_Serverless_Multi-Tier_Architectures.pdf
+

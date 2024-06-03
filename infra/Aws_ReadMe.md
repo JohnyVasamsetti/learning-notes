@@ -32,7 +32,7 @@ IAM:
     	creating Access key to access AWS from console
 
     audit:
-    	Credential Report: details of user
+    	Credential Report: details of users
     	Access advisor: service level permissions to user
 
 IAM Advanced:
@@ -125,7 +125,7 @@ Placement Groups:
     	critical application, availability matters
 
     Partition:
-    	group of instance in one partition ( one hardware )
+    	group of instances in one partition ( one hardware )
     	7 partitions per az
     	medium risk
     	100's of instances
@@ -181,7 +181,7 @@ EC2 Instance Storage:
     	unpredictible workloads
 
     	Size: Auto scale
-    	Throughput: Bursting(Auto scale based on volume), Provisioned(fixed), Elastic
+    	Throughput: Bursting(Auto scale based on volume), Provisioned(fixed), Elastic(Automatic)
     	Performance: General Purpose, Max IO
 
     	Types:
@@ -330,6 +330,7 @@ Route53:
     CNAME -
     	maps hostname to another hostname
     	For Non Root domain ( something.mydomain.com )
+
     Alias -
     	maps hostname to Aws resource
     	For Both Root & Non_Root domains ( mydomain.com )
@@ -500,20 +501,20 @@ Storage Extras:
     	AWS OpsHub: manage snowfamily devices
 
     FSx:
-    	FSx for windows
+    	FSx for windows ( SMB,NTFS )
     	FSx for lustre
     		Scratch
     		Persistent
-    	FSx for NetApp ONTAP
-    	FSx for OpenZFSCFVZb
+    	FSx for NetApp ONTAP ( SMB,NFS,ISCSI )
+    	FSx for OpenZFS ( NFS )
 
     Storage Gateway:
-    	S3 File Gateway
-    	FSx file Gateway
-    	Volume Gateway
+    	S3 File Gateway ( SMB,NFS )
+    	FSx file Gateway ( SMB,NTFS )
+    	Volume Gateway ( ISCSI )
     		Cached Volumes
     		Stored Volumes
-    	Tape Gateway
+    	Tape Gateway (ISCSI)
 
     Transfer Family: S3 + EFS ( by connecting with Microsoft AD for authentication )
 
@@ -534,7 +535,7 @@ Integration & Messaging:
             user access
             reource based policy
         message visibility ( 30 sec ), ChangeMessageVisibility
-        long polling , WaitTimeSeconds: 1-20 sec
+        long polling at queue , WaitTimeSeconds: 1-20 sec at consumer
         duplicate, un-order
     FIFO SQS:
         no duplicates, order
@@ -542,7 +543,8 @@ Integration & Messaging:
     SNS:
         pub/sub model
         12,500,000 subscribers
-        message filtering
+        1,000,000 topics
+        message filtering ( while sending to many queues )
     SNS + SQS Fan Out
         
 
@@ -625,6 +627,7 @@ Database:
     		decrease latency
     		promoting another region ( RTO < 1m )
     		replication < 1s
+            replication lag 10ms
 
     	Clone:
     		faster than backup & restore.
@@ -656,6 +659,7 @@ Database:
 
     			backup & restore
     			high availability / replication
+                persistant
     			Sorted sets
 
     		2. MemCache
@@ -663,12 +667,13 @@ Database:
 
     			no backup & restore
     			no high availability
+                non-persistant
     			multi-threaded
 
-     DocumentDb
-    	aws version of mongoDb
-    	no sql, json data
-    	same as aurora
+    DocumentDb
+        aws version of mongoDb
+        no sql, json data
+        same as aurora
 
     Neptune
     	aws version of graph
@@ -711,7 +716,8 @@ Serverless:
     connect to sns / eventbridge
     lambda edge:
     	authenticate users at the CloudFront Edge Locations instead of authentication requests go all the way to your origins
-    
+        cloudfront function ( javascript, < 1ms )
+        lambda@edga ( nodeJs, python  5 - 10 sec )
 
     DynamoDB:
     	no sql, higly scalable + available , auto scalling, multi az replication
@@ -730,16 +736,40 @@ Serverless:
     	DynamoDb global tables
     		active-active
     	Backups
-    		35 days
+            continuos ( 35 days )
+            on-demand ( infinite )
         can't connect lambda directly from dynamoDb, you need dynamoDb Stream to do that.
-        import & export to s3 ( RCU & WCU won't be used )
+        import & export to s3 ( RCU & WCU won't be used ) -> ETL to transform data inbetween
+    
+    API gateway:
+        integrations:
+            lambda
+            endpoint
+            service ( to expose publicly )
+        endpoint types:
+            edge optimized ( default )
+            regional
+            private
+        security
+            iam roles
+            congnito
+            certificates
+    
+    Step function -> to orchastrate lambda functions in a workflow
+    
+    Congnito:
+        User Pool
+            Sign in functionality for app users
+        Identity Pool
+            Provide AWS credentials to users so they can access AWS resources directly
 
 Data & Analysis
 
     Athena:
     	serverless query executor for s3 access logs.
     	better for adhoc request ( quick to load )
-        using data source connector in lambda it will execute federated queries on DynamoDb, Redshift, RDS, Aurora, Elasticache, etc        
+        using data source connector in lambda it will execute federated queries on DynamoDb, Redshift, RDS, Aurora, Elasticache, etc 
+		columnar data > 128MB file
 
     Redshift:
     	online analytical processing
@@ -753,12 +783,18 @@ Data & Analysis
 
     OpenSearch :
     	search by any filed
+		security:
+			congnito
+			iam
+			kms
+			tls
     	storage classes:
     		hot : ebs + query + visualization
     		warm : s3 + query degradattion + visualization
     		cold : s3
 
     EMR : elastic map reduce
+		data processing, machine learning, web indexing, big data
     	hadoop cluster
     		master node
     		core node
@@ -768,6 +804,7 @@ Data & Analysis
     	serverless interactive dashboards
     	in-memory computation
         column level security
+		user , groups, dashboards
 
     Glue:
     	serverless
@@ -786,8 +823,11 @@ Data & Analysis
 
     MSK:
     	alternative for kinesis
+        MSK creates & manages Kafka brokers nodes & Zookeeper nodes for you
+        up to 3 for HA
     	server / serverless
         EBS
+        1MB default till 10MB message size
 
     Data ingestion pipeline:
     	collect data	Kinesis
@@ -842,6 +882,7 @@ Monitoring:
     		Application insights
 
     Cloudtrail
+        90 Days retention period
     	management events + data events
     	management event ( write events ) -> cloudtrial_insights -> insights_events => s3 / cloudtrail_console / eventbridge
     	better combination : API calls + Cloud Trail + Event Bridge
@@ -857,8 +898,8 @@ Monitoring:
 
 Machine Learning:
     
-    Rekognition: face detection, labeling, celebrity recognition • Transcribe: audio to text (ex: subtitles)
-    Transcribe
+    Rekognition: face detection, labeling, celebrity recognition
+    Transcribe: audio to text (ex: subtitles)
     Polly
     Translate: translations
     Lex: build conversational bots – chatbots
@@ -868,8 +909,8 @@ Machine Learning:
     SageMaker: machine learning for every developer and data scientist • Forecast: build highly accurate forecasts
     Forecast
     Kendra: ML-powered search engine
-    Personalize: real-time personalized recommendations • Textract: detect text and data in documents 
-    Textract
+    Personalize: real-time personalized recommendations 
+    Textract: detect text and data in documents 
 
 Security:
 
@@ -878,7 +919,7 @@ Security:
     	s3 replication
     	ami copy
     Parameter store
-    	4KB, 8KB
+    	10,000 + 4KB, 100,000 + 8KB
     	serverless
     	policies + notifications ( eventBridge )
     	secureString with kms
@@ -944,21 +985,37 @@ Disaster Recovery:
     		everything is up
     	Multi region
     		everything up on different region
+    Tips:
+        Backup
+        High Availability
+        Replication
+        Automation
+        Chaos
 
 Data Migrations:
 
-    DMS
+    DMS ( an ec2 instance with CDC which is used to replicate the data  )
     SCT ( only when migrating to different engine )
     need an compute-intensive ec2 instance to run DMS + SCT
     DMS multi-az ( standby )
+    RDS & Aurora migrations:
+        Internal:
+            1. snapshot from RDS and create Aurora DB
+            2. Aurora read replica of RDS and promote it as primary
+        External:
+            create backup file
+            upload to s3
+            create db with s3 backup file
+        If both are up and running DMS is best suite.
     SMS -> incremental replication of on-premise live servers to AWS
     Application Discovery Service & Migration Hub
     Application migration service
     VMware Cloud
 
     Aws BackUp
-    	plan : retention , frequency
-    	Bakup Vault ( WORM )
+        on-demand & scheduled
+    	plan : retention , frequency, window, transition to cold storage
+    	Bakup Vault ( WORM ) -> Even the root user cannot delete backups when enabled
 
     large amount of data transfer:
     	site-to-site - 100Mbps
@@ -968,7 +1025,8 @@ Data Migrations:
     	for on-going use DMS / Datasync with above ones
 
 AWS Networking:
-    
+    NAT Gateway
+        5 - 100 GBps, 
     VPC - Traffic Mirroring:
         send traffic to security appliances
     
@@ -983,9 +1041,25 @@ AWS Networking:
         Protect your entire Amazon VPC
 
 Other Services:
-
+    
+    HPA:
+        Elastic Network Adapter (ENA) up to 100 Gbps
+        Intel 82599 VF up to 10 Gbps – LEGACY
+        Elastic Fabric Adapter ( only for linux )
+    Systems Manager:
+        Integration with S3 and Cloudwatch & SNS & EventBridge
+        Run Command
+        Patch Manager
+        Maintenance Windows
+            Schedule
+            Duration
+            Ec2 instances
+            Tasks
+        Automation Runbook
     cost optimizer
+        Forecast usage up to 12 months
     aws batch
+        Docker images and run on ECS
     aws appflow ( Slack / ServiceNow -> S3 / Redshift )
     Amplify
         deploy mobile / web application

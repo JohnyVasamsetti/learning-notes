@@ -300,7 +300,7 @@ Target Group instances unhealthy :
     less timeout configuration
     	increase the timeout
 
-Auto Scalling group:
+Auto Scaling group:
 
     The Auto Scaling Group can't go over the maximum capacity (you configured) during scale-out events.
     launch template
@@ -416,7 +416,7 @@ S3:
     	sns, sqs, lambda
     	eventBridge
     	resource policy instead of user policy
-    Performance:
+    Performance: per prefix
         3,500 - GET/HEAD
         5,500 - PUT/POST/DELETE
     Uploads:
@@ -516,7 +516,7 @@ Storage Extras:
     		Stored Volumes
     	Tape Gateway (ISCSI)
 
-    Transfer Family: S3 + EFS ( by connecting with Microsoft AD for authentication )
+    Transfer Family: S3 + EFS ( by connecting with Microsoft AD for authentication along with cognito )
 
     DataSync:
     	S3, EFS, FSx
@@ -811,6 +811,7 @@ Data & Analysis
     	extract + transform + load
 
     Lake formation:
+        clean, normalise
     	central place for all data ( s3 , rds, aurora )
     	Glue + Central access control for users
 
@@ -863,7 +864,7 @@ Monitoring:
     			auto scaling
     			sns
     		composite alarm: monitor the state of other alarms
-            can be created based on logs
+            can be created based on  data
 
     	EventBridge:
     		schedule cron jobs
@@ -900,7 +901,7 @@ Machine Learning:
     
     Rekognition: face detection, labeling, celebrity recognition
     Transcribe: audio to text (ex: subtitles)
-    Polly
+    Polly: text to audio
     Translate: translations
     Lex: build conversational bots – chatbots
     Connect: cloud contact center
@@ -1025,6 +1026,7 @@ Data Migrations:
     	for on-going use DMS / Datasync with above ones
 
 AWS Networking:
+
     NAT Gateway
         5 - 100 GBps, 
     VPC - Traffic Mirroring:
@@ -1069,6 +1071,41 @@ Other Services:
     Trusted Advisor
         provide recommendations over 6 categories
 
+Boring to Remember:
+    
+    EBS:
+        gp3: 1Gb - 16Tb
+            3K,125MB
+            16K,1000MB
+        gp2: 1Gb - 16Tb
+            3K - 16K 
+            dependent on size
+        io1: 4Gb - 16Tb
+            32K, 64K
+        io2: 4Gb - 64Tb
+            256K
+            1000:1 ( IOPS:Gb )
+        st1: 125Gb - 16Tb
+            500, 500 MB
+        sc1: 125Gb - 16Tb
+            250, 250 MB
+    EFS:
+        Performance Mode:
+            General Purpose
+            Max IO
+        Throughput Mode:
+            Bursting 1TB = 50 MB + 100
+            Provisioned ( 1GB per 1TB )
+            Elastic
+
+    Instance types:
+        On-Demand : 60 Sec 
+        Reserved : 75%
+        Spot Instance: 90%
+        Savings:
+            Ec2 Savings Plan: 72% ( Region, Family fix )
+            Compute Savings Plan : 66% ( Anything )
+
 Mock Test Reviews:
     
     Use AWS Global Accelerator to distribute a portion of traffic to a particular deployment.
@@ -1078,7 +1115,7 @@ Mock Test Reviews:
     AWS Compute Optimizer to look at instance type recommendations
     
     You cannot use Transfer Acceleration to copy objects across Amazon S3 buckets in different Regions using Amazon S3 console.
-    S3 replication: S3 batch + S3 sync
+    S3 replication: S3 batch & S3 sync
 
     Can't modify Stadanrd queue to FIFO.Should create new FIFO / delete the stadard and convert it to FIFO.FIFO should have suffex as .fifo
     FIFO will have 3000 thoughput with batching, 300 without batching
@@ -1123,8 +1160,6 @@ Mock Test Reviews:
 
     OriginGroup -> An origin group includes two origins (a primary origin and a second origin to failover to) and a failover criteria that you specify.
     
-    a geographic restriction for the delivery of content -> cloudfront
-
     tightly-coupled High Performance Computing -> Elastic Fabric Adapter 
 
     two regions lo low latency queries annadante inka global db eh ( dynamodb, aurora )
@@ -1145,8 +1180,6 @@ Mock Test Reviews:
 
     On-Demand Capacity Reservations enable you to reserve compute capacity for your Amazon EC2 instances in a specific Availability Zone for any duration
 
-    app deployed on more instance then we should use ALB
-
     maximum performance -> use Direct connect over site-to-site connection
 
     Mock-Test-1:
@@ -1163,7 +1196,7 @@ Mock Test Reviews:
         mistake - migration from fsx to s3 ( datasync over dms )
         don't know - improve performance of on-premise dynamic app by having cache using cloudfront
         mistake - multi az ( mq,ec2,database )
-        don't kmow - use deny over the apply as much as possible ( SCP with a deny rule that denies all but the specific instance types )
+        don't kmow - use deny over the allow as much as possible ( SCP with a deny rule that denies all but the specific instance types )
         mistake - scale middle tier ec2 instances
         don't know - ec2 when we need it ( capacity reservations(without commitment), zonal reserved instances(with commitment) )
         mistake - made ec2 instance available to internet ( use alb with new public subnets )
@@ -1173,11 +1206,11 @@ Mock Test Reviews:
 
 Doubts:
 
-    how to enable tls/ssl on rds ? It will be automatic
-    backup website ? s3 / ec2 ? If static files then s3
-    cloudfront orgins ? at a time s3 and inkokati undocha ? Undochu OriginGroup tho at a time two origin pettochu. primary + secondary
-    Is efs multi region ? kakapothe multi-region vachinapudu s3 chuskocha ? 
-    which is secure for rds ? iam / tls ? both are little different iam evariki access ivvalo chustadhi, tls aa connections secure ga undela chustadhi
+    how to enable tls/ssl on rds ? Answer: It will be automatic
+    backup website ? s3 / ec2 ? Answer: If static files then s3
+    cloudfront orgins ? at a time s3 and inkokati undocha ? Answer: Undochu OriginGroup tho at a time two origin pettochu. primary + secondary
+    Is efs multi region ? kakapothe multi-region vachinapudu s3 chuskocha ? Answer: replication will be there but not sure about mounting.
+    which is secure for rds ? iam / tls ? Answer: both are little different iam evariki access ivvalo chustadhi, tls aa connections secure ga undela chustadhi
     durable ? reliable ? resiliency ?
 
 WhitePapers:

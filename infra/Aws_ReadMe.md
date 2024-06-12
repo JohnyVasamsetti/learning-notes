@@ -502,7 +502,7 @@ Storage Extras:
 
     FSx:
     	FSx for windows ( SMB,NTFS )
-    	FSx for lustre
+    	FSx for lustre ( HPC parallel computing )
     		Scratch
     		Persistent
     	FSx for NetApp ONTAP ( SMB,NFS,ISCSI )
@@ -590,7 +590,7 @@ Database:
     	not open source
     	compatable with Postgres and MySql
     	5X performance than MySql on RDS & 3X performance than Postgres
-    	Automatically increment 10GB when you use more space ( upto 128TB)
+    	Automatically increment 10GB when you use more space (upto 128TB)
     	15 Postgres, 5 MySql replicas
     	faster replication process
     	more cost than RDS ( 20% )
@@ -1202,7 +1202,23 @@ Mock Test Reviews:
         mistake - made ec2 instance available to internet ( use alb with new public subnets )
         mistake - maximum performance while connecting on-premise to vpc -> Direct connect over site-to-site
         don't know - AWS recommend using separate queues when you need to provide prioritization of work
-        mistake - didn't understood it properly. encrypt of read-replica only possible with new encrypted snapshot and new db creation.
+        mistake - didn't understood it properly at that time. encrypt of read-replica only possible with new encrypted snapshot and new db creation.
+    
+    Mock Test - 2:
+        private connection -> damn sure not SiteToSite connection. either snow family / direct connect ( if time permits )
+        millisecond responsiveness  -> DynamoDb over Redshift
+        near real-time performance  -> KDS over SQS
+        durable and loosely coupled solution for storing jobs  -> SQS
+        resilient storage for Windows instances -> Fsx windows server
+        block HTTP or HTTPS traffic to domains -> domain list rules in network firewall
+        AWS Batch is designed to run jobs across multiple instances
+        NLB should be in the service provider VPC & Endpoint should be in the consumer VPC
+        AWS recommend you use target tracking in place of step scaling for most use cases
+        Amazon ECS uses the AWS Application Auto Scaling service to scales tasks. This is configured through Amazon ECS using Amazon ECS Service Auto Scaling.
+        Redshift -> RedShift can also improve performance for repeat queries by caching the result and returning the cached result when queries are re-run.
+        hybrid cloud storage -> services that provide on-premises access to virtually unlimited cloud storage
+        Accounts can be migrated between organizations using AWS Organizations console.
+
 
 Doubts:
 

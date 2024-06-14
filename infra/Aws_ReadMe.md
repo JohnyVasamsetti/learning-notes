@@ -1219,6 +1219,34 @@ Mock Test Reviews:
         hybrid cloud storage -> services that provide on-premises access to virtually unlimited cloud storage
         Accounts can be migrated between organizations using AWS Organizations console.
 
+    Mock Test - 3:
+        DNS failover configurations:
+            active-passive -> failover
+            active-active -> return many 
+            combination -> use more policies
+        Encryption to Direct connect connection -> VPG 
+            A VPG is used to setup an AWS VPN which you can use in combination with Direct Connect to encrypt all data that traverses the Direct Connect link.
+            This combination provides an IPsec-encrypted private connection that also reduces network costs, increases bandwidth throughput
+        RDS -> KMS uses a customer master key (CMK) to encrypt the DB instance, all logs, backups, and snapshots.
+        Multi-AZ RDS Read Replica -> create standby replica for your read replica. when availability matters for read replica regardless of whether the main instance is multi-az
+        FSx for Windows File Server does not use Amazon S3
+        API Gateway REST API directly accesses the data in the DynamoDB table
+        Route 53 health check to route traffic to standby alb
+        resilient architecture -> ASG + ALB
+        static ip -> global accelerator since cloudfront won't work here.
+        Aurora Multi master only works within a Region it does not work across Regions.
+        S3 Replication -> Both source and destination buckets must have versioning enabled.
+        Amazon CloudTrail can be used to log activity on the s3 reports.
+        If multi-az is available no need to create read replica, use the standby replica for read queries.
+        It is not supported to connect Fargate to FSx for Lustre.
+
+        can we create route53 record for lambda endpoint ? No
+        Is simple and step policies are different ? Yes
+        can NLB attached to instances from different regions ? No, it's region specific.
+        SwapUtilization metric -> Aws managed
+        Differences between aurora & aurora serverless 
+        Difference between NAT gateway & virtual private gateway 
+        what is reduced redundency in s3 life cycle policiies
 
 Doubts:
 

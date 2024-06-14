@@ -1,15 +1,31 @@
 pod_scheduler -> CA -> ASG -> Ec2
 pod_scheduler -> Karpenter -> Ec2
 
-nodepool types:
+Advantages
+    
+Life Cycle:
 
-    single
-    multi
-    weighted
+    Evaluation
+    Implementation
+    Day2 Operations
+
+NodePool configuration:
+
+    labels will be added to pod
+    node termination handler
+    nodepool types:
+        single
+        multi
+        weighted
+    Optimization:
+        reducing the node of ec2 instances
+        reducing the instance type
+        consolidation = WhenUnderutilized
 
 Batching:
 
-    1 sec idol window to take the pods within 10 seconds and create a node for those instead of creating a node for each pod
+    1 sec idol window lo enni pods vaste anni flush chestam
+    okavela 1 sec ideal time eh lekunda keep on pods vastu unte, max 10 seconds varakuu wait chesi flush cheyyali
 
 Scheduling:
 
@@ -20,24 +36,15 @@ Scheduling:
     topology spread
     pod_affinity and anti_affinity
 
-Optimization:
-
-    reducing the node of ec2 instances
-    reducing the instance type
-    consolidation = WhenUnderutilized
-
-Can't run karpenter on node which is provisioned by karpenter.
-prometheus + grafana setup since it emits the metrics
-it will select the AMI from ASM parameter store
-
 Drift:
     when there is a mismatch in provisioned and current config, it will update the nodes in a rolling deployment fashion
         latest ami version
+        it will select the AMI from ASM parameter store
         ami version based on eks version
 
 Distruption:
-    Select candidate -> Replace Candidate -> Drain candidate -> Delete condidate
 
+    Select candidate -> Launch Replace -> Drain candidate -> Delete condidate
     have control over
         you can add config to not distrupt a perticuler pod
         how many pods can distrupt at a time
@@ -47,5 +54,105 @@ Distruption:
     it will consider whether the pod can be distrubed or not
 
 Consolidation:
+
     N -> 0 consolidation ( no new nodes )
     N -> 1 consolidaiton ( new nodes will be created )
+
+Can't run karpenter on node which is provisioned by karpenter.
+prometheus + grafana setup since it emits the metrics
+
+
+Old One:
+
+    Introduction:- Karpenter is an open-source node lifecycle management project built for Kubernetes. We are planning to use Karpenter to manage AWS EKS managed nodes in AWS EKS cluster. Karpenter will take care of autoscaling nodes depending upon the predefined metrics. You can get more information about Karpenter by following below link: Karpenter Docs
+    We are using R, C and M type of ec2 instances to cover all kind of workloads and type will be selected by Karpenter best suited for given requirements.
+    
+    Below are the steps followed to setup Karpenter on AWS EKS sandbox environment in AWS Development account of Ecommerce domain.
+    
+    Steps:-
+    
+    Create a Github actions jobs for Karpenter Controller in the eks-addons-<env> GHA workflow in respective environment similar to the one created in sandbox environment GHA workflow eks-addons-sandbox.
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/blob/42ac9bf178b3d03ff999a96af2d55ce8dabfc8bb/.github/workflows/eks-addons-sandbox.yml#L212
+    
+    Create namespace similar to below one to install Karpenter  controller.
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/pull/872/files
+    
+    Give appropriate permissions to Karpenter node controller as given in below files.
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/blob/c482d49bf7854434372ba36c0bc734c07d2058d2/iam/system-policies/ecommerce-eks-karpenter-controller.json
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/blob/c482d49bf7854434372ba36c0bc734c07d2058d2/iam/system-roles/ecommerce-eks-karpenter-controller.json
+    
+    Make sure to update the service account name with correct namespace and service account name in below line.
+    https://github.deere.com/cloud/global-role-management/blob/d9589dadbe87b6d56a0944a3d9ef2255826cdca5/roles/aws-cps-johndeerestore-devl/iam-roles/system-roles/eks-karpenter-controller#L13
+    
+    Create NodePool and EC2 NodeClass Kuberntes objects for Karpenter similar to following ones in their respective environments. Please note that, we are adding "kubernetes.io/cluster/ecommerce-sandbox: shared" tag to subnet and "kubernetes.io/cluster/ecommerce-sandbox: owned" tag to security groups manually as we didn't manage them.
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/blob/c482d49bf7854434372ba36c0bc734c07d2058d2/delivery-infrastructure/sandbox/config/karpenter/ec2-nodeclass.yaml
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/blob/6c832d280971c6292782dca8d08282c0829e848d/delivery-infrastructure/sandbox/config/karpenter/nodepool.yaml
+    
+    Run eks-addons-<env> workflow for Karpenter controller install job similar to below one.
+    https://github.deere.com/ECommerce/ecommerce-infrastructure-code-cps/actions/runs/8049946
+    
+    To move your deployment from fargate / nodegroup to karpenter nodepool add the below configuration to your helm values.
+    https://github.deere.com/ECommerce/ecommerce-search-data-consumer/pull/622
+
+New One:
+
+    what is karpenter ?
+        Karpenter is an open-source node lifecycle management project built for Kubernetes. We are planning to use Karpenter to manage AWS EKS managed nodes in AWS EKS cluster. Karpenter will take care of autoscaling nodes depending upon the predefined metrics. You can get more information about Karpenter by following below link: Karpenter Docs
+    
+    Why we need this in our architecture ?
+        Earlier days we are using eks fargate for our workloads where it will take care of scaling the worker nodes based on-demand. But Currently we will be moving away from fargate moving towards the EC2 nodes ( node groups ) for our workloads. So we need a tool to scale our worker nodes based on the load. This connects me to two approaches
+        1. Cluster auto scaler
+            The Kubernetes Cluster Autoscaler automatically adjusts the number of nodes in your cluster based on the load by using the Auto Scaling groups. Though it's providing the functionality to scale our worker nodes it also comes with some limitations like you can't scale out beyond the asg configuration and sometimes it will end up with underutilized nodes.
+        2. Karpenter
+            It's far matured then legacy cluster auto scaler. It does more then auto scaling. One of the feature of karpenter is, it will consolidate the nodes when there was an under-utilized nodes. It will drastically decrease our cost.
+    
+    How to adopt Karpenter ?
+        To set up karpenter in our architecture we need to configure 3 components. Where should I install these things ? well, aws is recommending to install these on either on fargate or 2-node node group. You can see out 2-node node group HERE.
+        1. Karpenter controller :
+            It's a main component of karpenter which will take care of Provisioning Nodes, Optimizing Node Utilization, Monitoring and Adjusting.
+            Install:
+                Well, we have a helm chart to install the controller quickly. 
+    
+                helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter --version "${KARPENTER_VERSION}" --namespace "${KARPENTER_NAMESPACE}" --create-namespace \
+                --set "serviceAccount.annotations.eks\.amazonaws\.com/role-arn=${KARPENTER_IAM_ROLE_ARN}" \
+                --set "settings.clusterName=${CLUSTER_NAME}"
+    
+                wait, here there are two things to install from ourside.
+                1. namespace to install our components. you can find out namespace HERE.
+                2. service-account role to give least previledge permissions to the controller. you can find out policy & role HERE.
+        
+                check the status of your karpenter controller by using this command ` kubectl get pods -n karpenter-controller`
+            
+        2. NodePool
+            YAML configuration which is having the info about What kind of Ec2 instances the karpenter to provision.ex, which type of instance and what size of instance to provision. You can find our nodepool configuration HERE.
+            In our case we will be having two types of node-pools. One is for gha-runners and another one is for all except gha-runners. I told you earlier nodepool is something like what kind of ec2 instances, so for gha-runners we need a differnt type of ec2 instance where we need compute optimized and we don't want any interruptions / consolidation because gha pods should not have any interruptions until the job gets completed.
+    
+        3. NodeClass
+            YAML configuration which talks about more towards the ec2 machine. It's more likely equal to laungh template. ex, what kind of AMI to use, which security groups and subnets to attach to EC2. You can find our claanode configuration HERE.
+    
+        
+    How to migrate workloads from fargate to karpenter nodepool ?
+        Right now we have our general workloads configured in fargate here and gha workloads on ec2 node group here.
+        
+        First Approach :
+            We decommissioned the fargate profile by removing the code in an assumtion that the pods will move to the either ec2 node group / karpenter nodepool in rolling deployment fashion. Then we can use nodeSelector to the service deployment to force the deployment to go under karpenter. But it's not working as what we expected. Removing fargate profile leads to removing the fargate nodes evetually removing the pods under the fargate node. within 5 seconds of downtime the new pods got created in ec2 workload ( node group / nodepool ).
+        
+        Second Approach :
+            The motive behind this approach is, from the first approach we got to that we should not touch the fargate profile because it's giving us downtime. We should find a way to move our workloads from fargate to ec2 without decommissioning the fargate profiles. This leads to the below approach.
+            
+            1. Inform in General thread to not trigger the deployment workflow / any rollout restart during a specific time period. ( If possible Disable Deployment workflow for prod )
+
+            2. patch all the deployments under the namespace to migrate from fargate to node group without any downtime. ( command: k patch deployment deployment_name -n namespace_name -p '{"spec": {"template":{"metadata":{"annotations":{"eks.amazonaws.com/compute-type":"ec2"}}}}}' )
+            
+            3. do some sanity checks from our end & development teams ( for prod, do this on call with them )
+            
+            4. remove the fargate profile from the fargate_profile variables, and add it to the additional_namespaces so that only fargate profile will be decommissioned not the namespace. check out this PR for reference. 
+            
+            5. add nodeSelector ( node_pool:karpenter ) to deployment so that pods will be moved from node group to the node pool without any downtime 
+            
+            6. do some sanity checks from our end & development teams ( for prod, do this on call with them )
+            
+            7. Inform in General thread that their deployment workflows are free to trigger. ( Enable the Deployment workflow )
+
+    Issues we got while rollout the karpenter 
+        During the Karpenter rollout, we experienced 2-3 seconds of traffic fluctuations despite having at least one pod running to handle the load. Initially, we suspected this was an issue with Karpenter. However, when we conducted the same activity with non-Karpenter deployments, we observed the following:

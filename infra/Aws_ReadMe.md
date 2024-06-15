@@ -1216,7 +1216,7 @@ Mock Test Reviews:
         AWS recommend you use target tracking in place of step scaling for most use cases
         Amazon ECS uses the AWS Application Auto Scaling service to scales tasks. This is configured through Amazon ECS using Amazon ECS Service Auto Scaling.
         Redshift -> RedShift can also improve performance for repeat queries by caching the result and returning the cached result when queries are re-run.
-        hybrid cloud storage -> services that provide on-premises access to virtually unlimited cloud storage
+        hybrid cloud storage -> services that provide on-premises access to virtually unlimited cloud storage -> Storagete gateway
         Accounts can be migrated between organizations using AWS Organizations console.
 
     Mock Test - 3:
@@ -1240,13 +1240,6 @@ Mock Test Reviews:
         If multi-az is available no need to create read replica, use the standby replica for read queries.
         It is not supported to connect Fargate to FSx for Lustre.
 
-        can we create route53 record for lambda endpoint ? No
-        Is simple and step policies are different ? Yes
-        can NLB attached to instances from different regions ? No, it's region specific.
-        SwapUtilization metric -> Aws managed
-        Differences between aurora & aurora serverless 
-        Difference between NAT gateway & virtual private gateway 
-        what is reduced redundency in s3 life cycle policiies
 
 Doubts:
 
@@ -1256,6 +1249,13 @@ Doubts:
     Is efs multi region ? kakapothe multi-region vachinapudu s3 chuskocha ? Answer: replication will be there but not sure about mounting.
     which is secure for rds ? iam / tls ? Answer: both are little different iam evariki access ivvalo chustadhi, tls aa connections secure ga undela chustadhi
     durable ? reliable ? resiliency ?
+    can we create route53 record for lambda endpoint ? No
+    Is simple and step policies are different ? Yes
+    can NLB attached to instances from different regions ? No, it's region specific.
+    SwapUtilization metric -> Aws managed
+    Differences between aurora & aurora serverless 
+    Difference between NAT gateway & virtual private gateway ? NAT will go through public internet, VPG is purely private connection
+    what is reduced redundency in s3 life cycle policiies
 
 WhitePapers:
     

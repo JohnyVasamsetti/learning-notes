@@ -1079,7 +1079,7 @@ Boring to Remember:
             16K,1000MB
         gp2: 1Gb - 16Tb
             3K - 16K 
-            dependent on size
+            3:1 (IOPS:Gb)
         io1: 4Gb - 16Tb
             32K, 64K
         io2: 4Gb - 64Tb
@@ -1236,11 +1236,44 @@ Mock Test Reviews:
         static ip -> global accelerator since cloudfront won't work here.
         Aurora Multi master only works within a Region it does not work across Regions.
         S3 Replication -> Both source and destination buckets must have versioning enabled.
-        Amazon CloudTrail can be used to log activity on the s3 reports.
         If multi-az is available no need to create read replica, use the standby replica for read queries.
         It is not supported to connect Fargate to FSx for Lustre.
 
-
+    Mock-Test-4
+        cloudwatch event rule -> sns
+        install Linux-based software application -> ec2, not lambda
+        aws:Secure Transport header  -> SSL/TLS
+        x-amz-server-side-encryption -> encrypt an object at the time of upload 
+        RAID-0 : I/O matters then fault tolerance
+        RAID-1: fault tolerance matter then I/O
+        Ec2 monitoring:
+            basic monitoring -> 5 mins periods ( enabled by default )
+            detailed monitoring -> 1 min periods
+        AWS Data Exchange -> get third-party telemetry data
+        AWS Private 5G -> scale your own private cellular network
+        management account - enable organization trails option while creating new trail, members don't have write permissions on trials, read permissions on s3 logs.
+        AWS License Manager -> manage the software licenses
+        Fsx multi-az
+        mysql -> 3306
+        risk with spot instances that it would increase the cost
+        If there is a doubt between lambda and fargate on serverless situation always think about time to procees it.
+        SQS does not ingest data. If there is a kinesis data firehose go ahead with that.
+        service-managed tightly-coupled HPC deployment across nodes -> Aws Batch multi-node parallel job
+        db scale without downtime -> DynamoDb
+        AWS Control Tower automates the setup of a new landing zone -> pre-approved account,network configurations
+        AWS AppSync is a serverless GraphQL and Pub/Sub API service that simplifies building modern web and mobile applications.
+        Backup for Direct Connect -> IPSec VPN connection and use the same BGP prefix
+        For VPCs in the same region a VPG is not necessary
+        config rule -> state change actions will be integrated to eventBridge to take actions
+        doubts:
+            12,16,17,23,25,30,35,43,45,57,58
+            19(between relational and non-relational)
+            55 ( landing zone )
+    Improvements:
+        Ec2 reservations
+        Addvanced networking ( Dx, VGP, VPN, IPsec, Gateways )
+        Global Accelerator
+        Lnading zone
 Doubts:
 
     how to enable tls/ssl on rds ? Answer: It will be automatic

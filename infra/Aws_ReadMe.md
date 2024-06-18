@@ -109,7 +109,42 @@ EC2:
     	compute c
     	memory r
     	storage i,d
-
+    ec2 purchasing options:
+        On-Demand
+        Reserved :
+            1 / 3 year commitment
+            can't cancel, but modify,exchange,buy on marketplace
+            instance attributes:
+                type, family, os, scope ( Region / Zonal ), tenancy( host / dedicated )
+            Offerinc class:
+                Standard:
+                    75 %
+                    modify / sell
+                Convertible:
+                    66 %
+                    can change the instance attributes
+        Savings plan:
+            1 / 3 year commitment
+            commit to certain type of usage ( 10$/H for 1 Year )
+            Compute Savings Plans:
+                66 %
+            EC2 Instance Savings Plans:
+                72 %
+                locked to specific family & region
+        Spot Instance:
+            90 %
+            interrupted
+        Dedicated Host:
+            A physical server 
+            BYOL
+        Dedicated instance:
+            Instnaces on hardware
+            may share hardware to other instance
+            no control over the placement group
+        Capacity reservation:
+            reserve On-Demand instance capacity in a az
+            no time commitment, no discounts
+            will be charged regardless of using it or not
 Placement Groups:
 
     Group of instances
@@ -375,8 +410,10 @@ Global Accelerator:
 
     create instnaces in different regions
     create endpoints with those instances
-    will be one dns name
+    attach those endpoints to the global accelerator
     traffic will goes to the nearest region instance
+    failover within 30 sec
+    expose 2 static IP's
     tcp, udp => good for gaming apps
 
 S3:

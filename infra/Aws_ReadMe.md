@@ -46,6 +46,13 @@ IAM Advanced:
     			test OU
     				account-1 ( need an explicit allow )
     				account-2
+        Security OU
+            audit account
+            log archive account
+        Sandbox OU
+            dev / test accounts
+        Prod OU
+            prod account
 
         central logging account
 
@@ -411,14 +418,15 @@ Global Accelerator:
     create instnaces in different regions
     create endpoints with those instances
     attach those endpoints to the global accelerator
+    global accelerator will expose 2 static IP's
     traffic will goes to the nearest region instance
     failover within 30 sec
-    expose 2 static IP's
     tcp, udp => good for gaming apps
 
 S3:
 
     by default private, can't access using public url only through pre-signed url
+    5TB, > 5GB ( multi upload )
     website hosting:
     	should be public
     	http://bucket-name.s3-website-aws-region.amazonaws.com
@@ -431,15 +439,15 @@ S3:
     	deletions with version Id not possible
     storage classes
     	standard
-    	standart IA
+    	standart IA ( backup )
     	intelligent tiering
     		frequent
     		in-frequent
     		archive instant access tier
     		archive access tier
     		deep archive access tier
-    	one-zone IA
-    	Glacier instant retrieval
+    	one-zone IA ( sencondary backup, can be recretable)
+    	Glacier instant retrieval (
     	Glacier flexible retrieval
     	Glacier deep archive
     life cycle rules
@@ -499,7 +507,7 @@ S3:
     Access Point
     	dns name + access permission
     	different folders => different access points => different users
-    	access point + vpc endpoint
+    	access point + vpc endpoint ( restrict access from within vpc )
     S3 Object lambda
     	modifying data on fly before retrieval
     	s3 object => access point => lambda => lambda access point => application
@@ -681,7 +689,7 @@ Database:
 
     ElastiCache:
     	It's same how RDS managing Relation database. It's managing Redis & Memcache
-
+        heavy changes from application side
     	Architecture:
     		Storing recent queries in cache
     		Storing session data for user login in cache
@@ -747,6 +755,7 @@ Serverless:
         disk capacity 512MB - 10GB
     	maximum execution 15 mins
     	4KB variables
+        compressed 50MB, uncompressed 250MB
     lambda snapstart
     lambda in vpc ( eni )
     invoke lambda from rds instance
@@ -832,6 +841,7 @@ Data & Analysis
 
     EMR : elastic map reduce
 		data processing, machine learning, web indexing, big data
+        on-demand, reserved, spot
     	hadoop cluster
     		master node
     		core node
@@ -901,7 +911,7 @@ Monitoring:
     			auto scaling
     			sns
     		composite alarm: monitor the state of other alarms
-            can be created based on  data
+            can be created based on data
 
     	EventBridge:
     		schedule cron jobs
@@ -931,7 +941,7 @@ Monitoring:
 
     	cloudtrail is little different, it records API calls within account by everyone. but aws config will evaluate resources agains compliance rules & config changes to resource & get timeline of changes
 
-    	config remediation: going back
+    	config remediation: going back ( with retries )
     	config notifications -> event bridge + sns
 
 Machine Learning:
@@ -1065,7 +1075,29 @@ Data Migrations:
 AWS Networking:
 
     NAT Gateway
-        5 - 100 GBps, 
+        5 - 100 GBps
+
+    Site to Site Connection:
+        Virtual Private Gateway
+        Customer Gateway
+        AWS VPN CloudHub
+
+    Direct Connect:
+        dedicated private network + data in transit not encrypted
+        Direct Connect Gateway to connect one or more VPC in many different regions
+        Types:
+            Dedicated ( 1, 10, 100 GBPS )
+            Hosted ( 50MB,500MB,10GB )
+        Direct Connect + VPN = IPsec encrypted private connection
+        Direct Connect - Resiliency
+        Site to Site as a backup
+
+    Transit Gateway:
+        having transitive peering between thousands of VPC and on-premises
+        Integration with Direct Connect Gateway, VPN connections
+        Equal-cost multi-path routing ( more STS connections )
+        AWS Resource Access Manager to share Transit Gateway with other accounts.
+
     VPC - Traffic Mirroring:
         send traffic to security appliances
     
@@ -1074,7 +1106,7 @@ AWS Networking:
     Networking Cost Savings:
         Use private Ip so that traffic won't go via public internet
         Query the db first then send the tiny result over the internet
-        Use endpoint for s3 & dynamodb
+        Use gateway endpoint for s3 & dynamodb
     
     Aws Network Firewall:
         Protect your entire Amazon VPC
@@ -1082,8 +1114,8 @@ AWS Networking:
 Other Services:
     
     HPA:
-        Elastic Network Adapter (ENA) up to 100 Gbps
         Intel 82599 VF up to 10 Gbps – LEGACY
+        Elastic Network Adapter (ENA) up to 100 Gbps
         Elastic Fabric Adapter ( only for linux )
     Systems Manager:
         Integration with S3 and Cloudwatch & SNS & EventBridge

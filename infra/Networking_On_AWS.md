@@ -101,8 +101,9 @@ inside and outside VPC
     dedicated private network + data in transit not encrypted
     Direct Connect Gateway to connect one or more VPC in many different regions
     Types:
-        Dedicated
-        Hosted
+        Dedicated ( 1, 10, 100 GBPS )
+        Hosted ( 50MB,500MB,10GB )
+    Direct Connect + VPN = IPsec encrypted private connection
     Direct Connect - Resiliency
     Site to Site as a backup
 
@@ -110,9 +111,8 @@ inside and outside VPC
     
     having transitive peering between thousands of VPC and on-premises
     Equal-cost multi-path routing ( more STS connections )
-    Integration with Direct Connect Gateway
-
-
+    Integration with Direct Connect Gateway, VPN connections
+    AWS Resource Access Manager to share Transit Gateway with other accounts.
 
 **Network Address Translation:**
 

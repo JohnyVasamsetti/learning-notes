@@ -1334,15 +1334,7 @@ Mock Test Reviews:
         Backup for Direct Connect -> IPSec VPN connection and use the same BGP prefix
         For VPCs in the same region a VPG is not necessary
         config rule -> state change actions will be integrated to eventBridge to take actions
-        doubts:
-            12,16,17,23,25,30,35,43,45,57,58
-            19(between relational and non-relational)
-            55 ( landing zone )
-    Improvements:
-        Ec2 reservations
-        Addvanced networking ( Dx, VGP, VPN, IPsec, Gateways )
-        Global Accelerator
-        Lnading zone
+
 Doubts:
 
     how to enable tls/ssl on rds ? Answer: It will be automatic
